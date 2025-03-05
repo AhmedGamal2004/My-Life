@@ -196,7 +196,9 @@
         </div>
     </div>
     <script>
-        const scriptUrl = "https://script.googhttps://script.google.com/macros/s/AKfycbzMx4L2JRSnbbt5zJteJzck4JdCs6sTWoAsEzhOvnb5m3P7YPjMU4J1QnSHsBsYdR0/execle.com/macros/s/AKfycbzhCeI6boFvW-1lUfz8_glxId-pGHnV5A4TQqkBv1C6UfacFFqR2XgUYZYS7VW6HZc/exec";
+        const apiKey = '$2a$10$kH.yb5bD7ngcnjyWAzBD8u2nnEO.rHlZ0hQDHZbPg0j6mBgtwMMZS';
+        const binId = '67c83eb0ad19ca34f816ea0b';
+        const scriptUrl = `https://api.jsonbin.io/v3/b/${binId}`;
 
         // Switch between tabs
         document.getElementById('postTab').addEventListener('click', function() {
@@ -237,19 +239,23 @@
             postsContainer.innerHTML = posts.map(post => `<div class='post'><p>${post.text}</p><div class='post-time'>${post.time}</div></div>`).join('');
         }
 
-        // Load data from Google Sheets
+        // Load data from jsonbin.io
         function loadData() {
-            fetch(scriptUrl)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('bioText').value = data.bio;
-                    document.getElementById('profilePic').src = data.profilePic;
-                    document.getElementById('cover').style.backgroundImage = `url(${data.coverPic})`;
-                    displayPosts(data.posts);
-                });
+            fetch(`${scriptUrl}/latest`, {
+                headers: {
+                    '$2a$10$kH.yb5bD7ngcnjyWAzBD8u2nnEO.rHlZ0hQDHZbPg0j6mBgtwMMZSX-Master-Key': apiKey
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('bioText').value = data.record.bio;
+                document.getElementById('profilePic').src = data.record.profilePic;
+                document.getElementById('cover').style.backgroundImage = `url(${data.record.coverPic})`;
+                displayPosts(data.record.posts);
+            });
         }
 
-        // Save data to Google Sheets
+        // Save data to jsonbin.io
         function saveData() {
             const data = {
                 bio: document.getElementById('bioText').value,
@@ -258,9 +264,10 @@
                 posts: JSON.parse(localStorage.getItem('posts')) || []
             };
             fetch(scriptUrl, {
-                method: 'POST',
+                method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': apiKey
                 },
                 body: JSON.stringify(data)
             });
@@ -278,7 +285,7 @@
             }
         });
 
-        // Change profile picture and save to Google Sheets
+        // Change profile picture and save to jsonbin.io
         document.getElementById('profilePic').addEventListener('click', function() {
             document.getElementById('profilePicInput').click();
         });
@@ -294,7 +301,7 @@
             }
         });
 
-        // Change cover picture and save to Google Sheets
+        // Change cover picture and save to jsonbin.io
         document.getElementById('cover').addEventListener('click', function() {
             document.getElementById('coverInput').click();
         });
