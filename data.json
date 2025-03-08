@@ -1,5 +1,6 @@
 {
-  "profileImage": "",
-  "bio": "",
-  "posts": []
+  "profileImage": "https://your-image-url.com/profile.jpg",
+  "coverImage": "https://your-image-url.com/cover.jpg",
+  "bio": "مرحبا! هذا هو البايو الخاص بي",
+  "posts": ["أول بوست!", "تجربة ثانية لعرض المنشورات."]
 }
